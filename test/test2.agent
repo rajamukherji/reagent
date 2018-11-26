@@ -1,0 +1,15 @@
+every(1, fun() do
+	with Instance := insert event(Message := "Hello world!", Test := "Banana") do
+		after(0, :delete, Instance)
+	end
+	return nil
+end)
+
+when event(Instance := old, Message) do
+	print('event({Message}, {Instance["Test"]})\n')
+end
+
+every(1, fun() do
+	-- try to find solution to "goal"
+	-- process solution
+end)

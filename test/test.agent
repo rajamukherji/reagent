@@ -1,0 +1,80 @@
+schema food is
+	var Id, Name
+	index Id
+end
+
+schema old_food is
+	var Id
+	index Id
+end
+
+when food(Id, Name), not old_food[Id] do
+	print('New food detected: {Id} -> {Name}\n')
+	insert old_food(Id)
+	when food[Id := 1](Name) do
+		print('Food name changed to {Name}\n')
+	end
+end
+
+when delete old_food[Id := 1] do
+	print('old_food[1] deleted\n')
+end
+
+every(1, fun() print("Tick\n"))
+
+after(1, fun() do
+	exists food[Id := 1](Name) then
+		print("Found food 1 -> {Name}\n")
+	else
+		print('No matching food for 1\n')
+	end
+end)
+
+after(2, fun() do
+	print("Creating a banana...\n")
+	insert food(Id := 1, Name := 'Banana')
+end)
+
+after(3, fun() do
+	exists food[Id := 1](Name) then
+		print('Found food 1 -> {Name}\n')
+	else
+		print('No matching food for 1\n')
+	end
+end)
+
+after(5, fun() do
+	print("Updating food name...\n")
+	update food[Id := 1](Name := "Apple")
+end)
+
+after(6, fun() do
+	exists food[Id := 1](Name) then
+		print('Found food 1 -> {Name}\n')
+	else
+		print('No matching food for 1\n')
+	end
+end)
+
+after(8, fun() do
+	print("Deleting old_food[1]...\n")
+	delete old_food[Id := 1]
+end)
+
+after(9, fun() do
+	exists old_food[Id := 1] then
+		print('Found old food 1\n')
+	else
+		print('Not matching old food for 1\n')
+	end
+end)
+
+after(10, fun() do
+	print("Updating food name...\n")
+	update food[Id := 1](Name := "Carrot")
+end)
+
+after(12, fun() do
+	print("Updating food name...\n")
+	update food[Id := 1](Name := "Pear")
+end)
